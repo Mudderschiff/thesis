@@ -1,2 +1,402 @@
 \chapter{Grundlagen/Fundamentals}
-Im Grundlagenkapitel werden die zum Verständnis des Hauptteils nötigen Grundlagen ausgearbeitet.  
+\section{Kryptographie}
+
+Kryptographie die Lehre der Absicherung von Narchichten durch verschluesselung \cite[18]{crypto}.
+Verschluesselung oder Chifferierung bezeichnet das Verfahren, um eine Nachricht unverstaendlich zu machen \cite[18]{crypto}.
+Die sicherheit aller kryptographischen Verfahren basiert im Wesentlichen auf der Schwierigkeit, einen geheimen Schluessel zu erraten oder ihn auf anderem Wege zu beschaffen.
+Es ist durchaus moeglich, einen Schluessel zu erraten, wenn auch die Wahrscheinlichkeit mit wachsender Schluessellaenge sehr klein wird. Absolute sicherheit gibt es in der Kryptographie nicht.
+\cite[25]{crypto}.
+
+Praktische alle kryptographischen Verfahren haben die Aufgabe, eine der folgenden vier Eigenschaften von Nachrichten zu gewaehrleisten. \cite[18]{crypto}
+\begin{itemize}
+    \item[Geheimhaltung:] Ziel der Geheimhaltung ist es, das Lesen einer Narchicht fuer Unbefugte unmoeglich bzw. schwierig zu machen.
+    \item[Authentifizierung] oder Authentifikation: Identitaetsbeweis des Senders einer Narchicht gegenueber dem Empfaenger, d.h. der Empfaenger kann sicher sein, dass die Narchicht nicht von einem anderen (unbefugten) Absender stammt.
+    \item[Integritaet] Die Nachricht darf waehrend der Uebermittlung nicht (von Unbefugten) veraendert werden. Sie bewahrt ihre Integritaet, das heisst ihre Unverletztheit.
+    \item[Verbindlichkeit] Der Sender kann spaeter nicht leugnen, eine Nachricht abgeschickt zu haben.
+\end{itemize}
+
+Kryptographische Algorithmen sind Berechnungsvorschriften, d.h. mathematische Funktionen zur Ver-und Entschluesselung \cite[19]{crypto}.
+Ein kryptographischer algorithmus zum verschluesseln kann auf vielfaeltige Art und Weise in unterschiedlichen Anwendungen eingesetzt werden.\cite[22]{eg-spec}.
+Damit eine Anwendung immer in der gleichen und korrekten
+Art ablauft, werden kryptographische Protokolle definiert. Im Gegensatzt zu den krzptographischen Algorithmen handelt es sich bei den Protokollen um Verfahren zur Steuerung des Ablaufs von Transaktionen fuer bestimmte Anwendungen. \cite[22]{eg-spec}.
+
+Es gibt viele verschiedene Realisierungen und Vorschlaege fuer elektroinsiche Wahlen. Ein besonders elegantes (und noch relativ neues) Protokoll wird
+hier vorgestellt. Zuvor muessen jedoch noch zwei Hilfsmittel bereitgestellt werden.
+
+\subsection{Elgamal}
+Der erste 1976 publizierte, public key-algorithmus von Diffie und Hellman. Er dient dem Schluesselaustausch, kann aber nicht zum Signieren verwendet werden.
+Eine Verallgemeinerung, die auch zum Verschluesselung und zum Signieren taugt, ist der Algorithmus von ElGamal.\cite[78]{crypto}.
+
+
+\cite[78]{crypto}
+
+Der ElGamal-Algorithmus ist eine Verallgemeinerung des Diffie-Hellman-Algorithmus. \cite[95]{crypto}.
+Diffie-Hellman ist ein Public-Key Algorithmus \cite[94]{crypto}. Mit Hilfe der Public-Key-Kryptography kann nun jedermann mit beliebigen Partnern geheime Narchichten austauschen, Dokumente signieren und viele andere kryptographische Anwendungen nutzen.\cite[22]{crypto}
+
+\subsubsection{Einweg-Hash-Funktionen}
+Einwegfunktionen sind funktionen die sich leicht berechnen lassen, deren Umkehrung jedoch nicht oder nur sehr schwer (
+d.h. mit
+nicht
+vertretbaren Aufwand) zu berechnen ist, insebsondere, wenn die funktion oeffentlich bekannt ist. \cite[100]{crypto}.
+Einweg-Hash-Funktionen sind Einwegfunktionen, die beliebig lange Klartexte auf einen Hash-Wert fester Laenge abbilden.\
+Secure-Hash-Algorithmus (SHA)
+
+\subsection{Non-interactive zero-knowledge (NIZK)}
+Non-interactive zero-knowledge (NIZK) proofs ElectionGuard provides numerous proofs about encryption keys, encrypted
+ballots, and election tallies using the following four techniques \cite[6]{eg-spec}
+\subsubsection{Schnorr proof}
+1. A Schnorr proof7 allows the holder of an ElGamal
+secret key s to interactively prove possession of s without revealing s. \cite[6]{eg-spec}.
+\subsubsection{Chaum-Pedersen}
+2. A Chaum-Pedersen proof8 allows an ElGamal
+encryption to be interactively proven to decrypt to a particular value without revealing the nonce used for encryption
+or the secret decryption key s. (This proof can be constructed with access to either the nonce used for encryption or
+the secret decryption key.) \cite[6]{eg-spec}
+\subsubsection{Cramer-Damg˚ ard-Schoenmakers technique}
+3. The Cramer-Damg˚ ard-Schoenmakers technique9 enables a disjunction to be interactively
+proven without revealing which disjunct is true.
+\subsubsection{Fiat-Shamir heuristic}
+4. The Fiat-Shamir heuristic10 allows interactive proofs to be
+converted into non-interactive proofs. \cite[6]{eg-spec}
+
+Using a combination of the above techniques, it is possible for ElectionGuard to
+demonstrate that keys are properly chosen, that ballots are properly formed, and that decryptions match claimed values.
+\cite[6]{eg-spec}
+
+Threshold Encryption
+Additive Homomorphic encryption
+
+
+Einleitung Wahlen und vorstellung von ElectionGuard
+
+\section{ElectionGuard}
+
+
+
+ElectionGuard is not a complete election system. It instead provides components for system developers to implement
+E2E-verifiable elections. The goal of ElectionGuard is to promote voter confidence by empowering voters to
+indepently verify the accuracy of election results. \cite[1]{eg-spec}
+
+An E2E-verifiable election provides artifacts which allow voters to confirm that their votes have been accurately
+recorded and counted. Specifically, an election is End-to-end (E2E) verifiable if two properties are achieved. 1.
+Individual voters can verify that their votes have been accurately recorded. 2. Voters and observers can verify that all
+recorded votes have been accurately counted.\cite[1]{eg-spec}
+
+ElectionGuard achieves this by
+
+\subsection{Verifier Construction}
+the signature. The entire election record and its digital signature should be
+\cite[25]{eg-spec}
+published and made available for full download by any interested individuals. Tools should also be provided for easy
+look up of tracking codes by voters.
+\cite[25]{eg-spec}
+
+\subsection{ElectionGuard Components}
+Four Principal components of ElectionGuard are described below \cite[3-4]{eg-spec}
+\begin{itemize}
+    \item[Parameter Requirements] These are properties required of parameters that are standard in every election. A
+    specific set of standard parameters is provided [...].
+    \item[Key Generation] Prior to each individual election, guardians must generate individual publicprivate key
+    pairs and exchange shares of private keys to enable completion of an election even if some guardians become
+    unavailable.
+    \item[Ballot Encryption] While encrypting the contents of a ballot is a relatively simple operation, most of the
+    work of ElectionGuard is the process of creating externally-verifiable artifacts to prove that each
+    encrypted ballot is well-formed (i.e., its decryption is a legitimate ballot without overvotes or improper values).
+    \item[Verifiable Decryption]
+    At the conclusion of each election, guardians use their private keys to produce election tallies
+    together with verifiable artifacts that prove that the tallies are correct.
+\end{itemize}
+
+\subsubsection{Parameter Requirements}
+
+\subsubsection{Key Generation}
+Prior to the start of voting, trustees participate in a process wherein they generate public keys to be used in the
+election. These trustees are called "Guardians" in ElectionGuard. Members of a canvassing board could serve as
+guardians \cite[2]{eg-spec}.
+
+Each guardian generates its own public-private key pair. These public keys will be combined to form a single public
+key which will be used to encrypt individual ballots. They are also used individually by guardians to exchange
+information about their private keys so that the election record can be produced after voting or auditing is
+complete – even if not all guardians are available at that time.
+
+
+The key generation ceremony begins with each guardian publishing its public keys together with proofs of knowledge
+of the associated private keys. Once all public keys are published, each guardian uses each other guardian’s public
+auxiliary key to encrypt shares of its own private keys. Finally, each guardian decrypts the shares it receives from
+other guardians and checks them for consistency. If the received shares verify, the receiving guardian announces its
+completion. If any shares fail to verify, the receiving guardian challenges the sender. In this case, the sender is
+obliged to reveal the shares it sent. If it does so and the shares verify, the ceremony concludes and the election
+proceeds. If a challenged guardian fails to produce key shares that verify, that guardian is removed and the key
+generation ceremony restarts with a replacement guardian. \cite[2]{eg-spec}
+
+Although it is preferred to generate new keys for each election, it is permissible to use the same
+keys for multiple elections so long as the set of guardians remains the same. A complete new set of keys must
+be generated if even a single guardian is replaced.\cite[3]{eg-spec}
+
+5As will be seen below, the actual public key used to encrypt votes will be a combination of separately generated public
+keys. So, no entity will ever be in possession of a private key that can be used to decrypt
+-\cite[5]{eg-spec}
+
+3.2 Key Generation Before an election, the number of guardians (n) is fixed together with a quorum value (k) that
+describes the number of guardians necessary to decrypt tallies and produce election verification data. The values n and
+k are integers subject to the constraint that 1 ≤ k ≤ n. Canvassing board members can often serve the role of election
+guardians, and typical values for n and k could be 5 and 3 – indicating that 3 of 5 canvassing board members must
+cooperate to produce the artifacts that enable election verification. The reason for not setting the quorum value k too
+low is that it will also be possible for k guardians to decrypt individual ballots.
+\cite[8]{eg-spec}
+
+\subsubsection{Ballot Encryption}
+Ballot encryption In most uses, the election system makes a single call to the ElectionGuard API after each voter
+completes the process of making selections [...]. ElectionGuard will encrypt
+the selections made by the voter and return a verification code which the system should give to the voter.1
+\cite[3]{eg-spec}
+
+The encrypted ballots are published along with non-interactive zero-knowledge proofs of their integrity. The encryption
+method used herein has a homomorphic property which allows the encrypted ballots to be combined into a single aggregate
+ballot which consists of encryptions of the election tallies.
+\cite[3]{eg-spec}
+
+Encryption of votes in ElectionGuard is performed using an exponential form of the ElGamal cryptosystem4.
+\cite[4]{eg-spec}.
+
+An encryption of one is used to indicate that an option is selected, and an encryption of zero is used to indicate that
+an option is not selected.\cite[5]{eg-spec}
+
+Homomorphic properties A fundamental quality of the exponential form of ElGamal described above is its additively
+homomorphic property. If two messages M1 and M2 are respectively encrypted as (A1, B1) = (gR1 mod p, gM1 · KR1 mod p)
+and (A2, B2) = (gR2 mod p, gM2 · KR2 mod p), then the componentwise product (A, B) = (A1A2 mod p, B1B2 mod p) = (gR1+R2
+mod p, gM1+M2 · KR1+R2 mod p) is an encryption of the sum M1 + M2.
+\cite[5]{eg-spec}.
+
+This additively homomorphic property is used in two important ways in ElectionGuard. First, all of the encryptions of a
+single option across ballots can be multiplied to form an encryption of the sum of the individual values. Since the
+individual values are one on ballots that select that option and zero otherwise, the sum is the tally of votes for that
+option and the product of the individual encryptions is an encryption of the tally. The other use is to sum all of the
+selections made in a single contest on a single ballot. After demonstrating that each option is an encryption of either
+zero or one, the product of the encryptions indicates the number of options that are encryptions of one, and this can be
+used to show that no more ones than permitted are among the encrypted options – i.e., that no more options were selected
+than permitted. However, as will be described below, it is possible for a holder of a nonce R to prove to a third party
+that a pair (α, β) is an encryption of M without revealing the nonce R and without access to the secret s.
+\cite[5]{eg-spec}
+
+Encryption of other data ElectionGuard provides means to encrypt data other than votes, which are selections encoded as
+zero or one that need to be homomorphically aggregated. Such data may include the cryptographic shares of a guardian’s
+private key that are sent to the other guardians and are encrypted to the receiving guardians’ public keys, write-in
+information that needs to be attached to an encrypted selection and is encrypted to the election public key, or other
+auxiliary data attached to an encrypted ballot, either encrypted to the election public key or to an administrative
+public key. The non-vote data do not need to be homomorphically encrypted and can use a more standard form of public-key
+encryption removing the data size restrictions imposed by the exponential ElGamal scheme for vote encryption.
+ElectionGuard encrypts such data with hashed ElGamal encryption, which deploys a key derivation function (KDF) to
+generate a key stream that is then XORed with the data. To implement the KDF and to provide a message authentication
+code (MAC), encryption makes use of the keyed Hash Message Authentication Code HMAC. In ElectionGuard, HMAC is
+instantiated as HMAC-SHA-256 with the hash function SHA-256.
+\cite[7]{eg-spec}
+
+\subsubsection{Verifiable Decryption}
+After the conclusion of voting or
+auditing, a quorum of guardians is necessary to produce the artifacts required to enable public verification of the
+tally. \cite[2]{eg-spec}
+
+Verifiable decryption
+In the final step, election guardians independently use their secret keys to decrypt the election tallies and associated
+verification data. It is not necessary for all guardians to be available to complete this step. If some guardians are
+missing, a quorum of guardians can use the previously shared key fragments to reconstruct the missing verification data.
+\cite[3]{eg-spec}
+
+Observers can use this open specification and/or accompanying materials to write election verifiers that can confirm the
+integrity of each encrypted ballot, the correct aggregation of these ballots, and the accurate decryption of election
+tallies.
+\cite[3]{eg-spec}
+
+
+Threshold encryption Threshold ElGamal encryption is used for encryption of ballots and other data. This form of
+encryption makes it very easy to combine individual guardian public keys into a single public key. It also offers a
+homomorphic property that allows individual encrypted votes to be combined to form encrypted tallies. The guardians of
+an election will each generate a public-private key pair. The public keys will then be combined (as described in the
+following section) into a single election public key which is used to encrypt all selections made by voters in the
+election. Ideally, at the conclusion of the election, each guardian will use its private key to form a verifiable
+partial decryption of each tally. These partial decryptions will then be combined to form full verifiable decryptions of
+the election tallies. To accommodate the possibility that one or more of the guardians will not be available at the
+conclusion of the election to form their partial decryptions, the guardians will
+\cite[6]{eg-spec}
+
+\subsection{Parameter Requirements}
+share11 their private keys amongst each other during key generation in a manner to be detailed in the next section. A
+pre-determined threshold quorum value (k) out of the (n) guardians will be necessary to produce a full decryption.
+\cite[7]{eg-spec}
+
+
+
+Parameter Requirements Specific values for primes p and q and a generator g are given in Section 4 Baseline Parameters
+below.
+\cite[7]{eg-spec}
+
+\subsection{Key Generation}
+of an election is a public ballot coding file. This file lists all the contests in an election, the number of selections
+allowed for each contest, and the options for each contest together with associations between each option and its
+representation on a virtual ballot. It is assumed that each contest in the ballot coding file has a unique label and
+that within each contest, each option also has a unique label. For
+\cite[8]{eg-spec}
+
+But the contents of this file are hashed together with the prime modulus (p), subgroup order (q), generator (g), number
+of guardians (n), decryption quorum threshold value (k), date, and jurisdictional information to form a base hash code (
+Q) which will be incorporated into every subsequent hash computation in the election.
+\cite[8]{eg-spec}
+
+
+
+Note that decryption of individual ballots does not directly compromise voter privacy since links between encrypted
+ballots and the voters who cast them are not retained by the system. However, voters receive verification codes that can
+be associated with individual encrypted ballots, so any group that has the ability to decrypt individual ballots can
+also coerce voters by demanding to see their tracking codes. Threshold ElGamal encryption is used for encryption of
+ballots. This form of encryption makes it very easy to combine individual guardian public keys into a single public key
+for encrypting votes and ballots. It also offers a homomorphic property that allows individual encrypted votes to be
+combined to form encrypted tallies. The guardians of an election will each generate a public-private key pair. The
+public keys will then be combined (as described in the following section) into a single election public key which is
+used to encrypt all selections made by voters in the election. Ideally, at the conclusion of the election, each guardian
+will use its private key to form a verifiable partial decryption of each tally. These partial decryptions will then be
+combined to form full verifiable decryptions of the election tallies. To accommodate the possibility that one or more of
+the guardians will not be available at the conclusion of the election to form their partial decryptions, the guardians
+will cryptographically share13 their private keys amongst each other during key generation in a manner to be detailed in
+the next section. A pre-determined threshold value (k) out of the (n) guardians will be necessary to produce a full
+decryption.
+\cite[8]{eg-spec}
+
+\subsection{Ballot Encryption}
+An ElectionGuard ballot is comprised entirely of encryptions of one (indicating selection made) and zero (indicating
+selection not made). To enable homomorphic addition (for tallying), these values are exponentiated during encryption.
+\cite[12]{eg-spec}
+
+A contest in an election consists of a set of options together with a selection limit that indicates the number of
+selections that are allowed to be made in that contest. In most elections, most contests have a selection limit
+\cite[12]{eg-spec}
+
+A legitimate vote in a contest consists of a set of selections with cardinality not exceeding the selection limit of
+that contest. To accommodate legitimate undervotes, the internal representation of a contest is augmented with
+“placeholder” options equal in number to the selection limit. Placeholder options are selected as necessary to force the
+total number of selections made in a contest to be equal to the selection limit. When the selection limit is one, for
+example, the single placeholder option can be thought of as a “none of the above” option. With larger selection limits,
+the number of placeholder options selected corresponds to the number of additional options that a voter could have
+selected
+\cite[12]{eg-spec}
+options selected corresponds to the number of additional options that a voter could have selected in a contest. For
+efficiency, the placeholder options could be eliminated in an approval vote. However, to
+\cite[12]{eg-spec}
+
+Two things must now be proven about the encryption of each vote to ensure ballot integrity. 1. The encryption associated
+with each option is either an encryption of zero or an encryption of one. 2. The sum of all encrypted values in each
+contest is equal to the selection limit for that contest (usually one).
+\cite[12]{eg-spec}
+
+\subsection{Outline for proofs of ballot correctness}
+
+The use of ElGamal encryption enables efficient zero-knowledge proofs of these requirements, and the Fiat-Shamir
+heuristic can be used to make these proofs non-interactive. Chaum-Pedersen proofs are used to demonstrate that an
+encryption is that of a specified value, and these are combined with the Cramer-Damg˚ ard-Schoenmakers technique to show
+that an encryption is that of one of a specified set of values – particularly that a value is an encryption of either
+zero or one. The encryptions of selections in a contest are homomorphically combined, and the result is shown to be an
+encryption of that contest’s selection limit – again using a Chaum-Pedersen
+\cite[13]{eg-spec}
+the result is shown to be an encryption of that contest’s selection limit – again using a Chaum-Pedersen proof.
+\cite[13]{eg-spec}
+The “random” nonces used for the ElGamal encryption of the ballot nonces are derived from a single 256-bit master nonce
+RB for each ballot.
+\cite[13]{eg-spec}
+
+\subsection{Tracking codes}
+Upon completion of the encryption of each ballot Bi, a tracking code Hi is prepared for each voter. The code is a
+SHA-256 hash
+\cite[17]{eg-spec}
+previous tracking code. When the previous tracking code Hi is included, the chain is
+The benefit of a chain is that it makes it more difficult for a malicious insider to selectively delete ballots and
+tracking codes after an election without detection.
+\cite[17]{eg-spec}
+
+Once in possession of a tracking code (and never before), a voter is afforded an option to either cast the associated
+ballot or spoil it and restart the ballot preparation process. The precise mechanism for voters to make these selections
+may vary depending upon the instantiation, but this choice would ordinarily be made immediately after a voter is
+presented with the tracking code, and the status of the ballot would be undetermined until the decision is made. It is
+possible, for instance, for a voter to make the decision directly on the voting device, or a voter may instead be
+afforded an option to deposit the ballot in a receptacle
+\cite[17]{eg-spec}
+
+\subsection{Ballot Aggregation}
+At the conclusion of voting, all of the ballot encryptions are published in the election record together with the proofs
+that the ballots are well-formed. Additionally, all of the encryptions of each option are homomorphically combined to
+form an encryption of the total number of times that option was selected. The encryptions (αi, βi) of each individual
+option are combined by forming the product (A, B) = (� i αi mod p, � i βi mod p). This aggregate encryption (A, B),
+which represents an encryption of the tally of that option, is published in the election record for each option.
+\cite[18]{eg-spec}
+
+\subsection{Decryption when all guardians are present}
+If all guardians are present and have posted suitable proofs, the next step is to publish the value
+\cite[19]{eg-spec}.
+one or more of the election guardians are not available for decryption, any k available guardians can use the
+information they have to reconstruct the partial decryptions for missing guardians
+\cite[19]{eg-spec}
+
+\subsection{Decryption of spoiled ballots}
+Every ballot spoiled in an election is individually verifiably decrypted in exactly the same way that the aggregate
+ballot of tallies is decrypted.
+\cite[21]{eg-spec}
+
+The exponential ElGamal used to encrypt votes is defined by a 4096-bit prime p and a 256-bit prime q which divides (p −
+1). We use r = (p − 1)/q to denote the cofactor of q, and a
+\cite[21]{eg-spec}
+
+\subsection{The Election Record}
+The record of an election should be a full accounting of all of the election artifacts. Specifically, it should contain
+the following. Date and location of an election. The ballot coding file. The baseline parameters:
+\cite[24]{eg-spec}
+
+The base hash value Q computed from the above. The commitments from each election guardian to each of their polynomial
+coefficients. The proofs from each guardian of possession of each of the associated coefficients. The election public
+key. The extended
+\cite[24]{eg-spec}
+
+Every encrypted ballot prepared in the election (whether cast or spoiled): – All of the encrypted options on each ballot
+(including “placeholder” options), – the proofs that each such value is an encryption of either zero or one, – the
+selection limit for each contest, – the proof that the number of selections made matches the selection limit, – the
+device information for the device that encrypted the ballot, – the date and time of the ballot encryption, – the tracker
+code produced for the ballot. The decryption of each spoiled ballot: – The selections made on the ballot, – the
+cleartext representation of the selections, – partial decryptions by each guardian of each option, – proofs of each
+partial decryption, – shares of each missing partial decryption (if any), – proofs of shares of each missing partial
+decryption (if any), – Lagrange coefficients used for replacement of any missing partial decryptions (if any). Tallies
+\cite[24]{eg-spec}
+
+
+Lagrange coefficients used for replacement of any missing partial decryptions (if any). Tallies of each option in an
+election: – The encrypted tally of each option, – full decryptions of each encrypted tally, – cleartext representations
+of each tally, – partial decryptions by each guardian of each tally, – proofs of partial decryption of each tally, –
+shares of each missing partial decryption (if any), – proofs of shares of each missing partial decryption (if any), –
+Lagrange coefficients used for replacement of any missing partial decryptions (if any). Ordered lists of the ballots
+encrypted by each device. An election record should be digitally signed by election administrators together with the
+date of 24
+\cite[24]{eg-spec}
+
+
+\section{Esp32}
+
+idf.py -p PORT flash monitor
+
+ESP-IDF is the IoT development framework for ESP series SoCs provided by Espressif, including:
+
+
+\begin{itemize}
+
+    \item
+    A series of libraries and header files, providing core components required for building software projects based on
+    ESP SoC;
+
+
+
+    \item Common tools and functions used during the development and
+    manufacturing processes, e.g., build, flashing, debugging, measurement
+    and etc.
+
+
+\end{itemize}
+
+
+
+Im Grundlagenkapitel werden die zum Verständnis des Hauptteils nötigen Grundlagen ausgearbeitet.
