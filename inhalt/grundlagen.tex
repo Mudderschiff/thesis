@@ -1,45 +1,46 @@
 \chapter{Grundlagen/Fundamentals}
 \section{Kryptographie}
 
-Kryptographie die Lehre der Absicherung von Narchichten durch verschluesselung \cite[18]{crypto}.
-Verschluesselung oder Chifferierung bezeichnet das Verfahren, um eine Nachricht unverstaendlich zu machen \cite[18]{crypto}.
-Die sicherheit aller kryptographischen Verfahren basiert im Wesentlichen auf der Schwierigkeit, einen geheimen Schluessel zu erraten oder ihn auf anderem Wege zu beschaffen.
-Es ist durchaus moeglich, einen Schluessel zu erraten, wenn auch die Wahrscheinlichkeit mit wachsender Schluessellaenge sehr klein wird. Absolute sicherheit gibt es in der Kryptographie nicht.
-\cite[25]{crypto}.
+Cryptography is the science of securing information through encryption \cite[18]{crypto}. Encryption or ciphering refers to the process of making a message incomprehensible \cite[18]{crypto} The security of all cryptographic methods is essentially based on the difficulty of guessing a secret key or obtaining it by other means. It is quite possible to guess a key, even if the probability becomes very small as the length of the key increases. It must be pointed out that there is no absolute security in cryptography. \cite[25]{crypto}.
 
-Praktische alle kryptographischen Verfahren haben die Aufgabe, eine der folgenden vier Eigenschaften von Nachrichten zu gewaehrleisten. \cite[18]{crypto}
+Practically all cryptographic methods have the task of ensuring one of the following security properties are met. \cite[18]{crypto}
 \begin{itemize}
-    \item[Geheimhaltung:] Ziel der Geheimhaltung ist es, das Lesen einer Narchicht fuer Unbefugte unmoeglich bzw. schwierig zu machen.
-    \item[Authentifizierung] oder Authentifikation: Identitaetsbeweis des Senders einer Narchicht gegenueber dem Empfaenger, d.h. der Empfaenger kann sicher sein, dass die Narchicht nicht von einem anderen (unbefugten) Absender stammt.
-    \item[Integritaet] Die Nachricht darf waehrend der Uebermittlung nicht (von Unbefugten) veraendert werden. Sie bewahrt ihre Integritaet, das heisst ihre Unverletztheit.
-    \item[Verbindlichkeit] Der Sender kann spaeter nicht leugnen, eine Nachricht abgeschickt zu haben.
+    \item[Confidentiality:] The aim of confidentiality is to make it impossible or difficult for unathorized persons to read a message.
+    \item[Authenticity:] Proof of identity of the message sender to the recipient, i.e. the recipient can be sure that the message does not originate from another (unauthorized) sender
+    \item[Integrity:] The message must not be altered (by unauthorized persons) during transmission. It retains its integrity.
+    \item[Non-repudiation] The sender cannot later deny having sent a message.
 \end{itemize}
 
-Kryptographische Algorithmen sind Berechnungsvorschriften, d.h. mathematische Funktionen zur Ver-und Entschluesselung \cite[19]{crypto}.
-Ein kryptographischer algorithmus zum verschluesseln kann auf vielfaeltige Art und Weise in unterschiedlichen Anwendungen eingesetzt werden.\cite[22]{eg-spec}.
-Damit eine Anwendung immer in der gleichen und korrekten
-Art ablauft, werden kryptographische Protokolle definiert. Im Gegensatzt zu den krzptographischen Algorithmen handelt es sich bei den Protokollen um Verfahren zur Steuerung des Ablaufs von Transaktionen fuer bestimmte Anwendungen. \cite[22]{eg-spec}.
+Cryptographic algorithms are mathematical equations, i.e. mathematical functions for encryption and decryption \cite[19]{crypto}. A cryptographic algorithm for encryption can be used in a variety of ways in different applications.\cite[22]{eg-spec}. To ensure that an application always runs in the same and correct correct way, cryptographic protocols are defined. In contrast to the cryptographic algorithms, the protocols are procedures for controlling the flow of transactions for certain applications. \cite[22]{eg-spec}.
 
-Es gibt viele verschiedene Realisierungen und Vorschlaege fuer elektroinsiche Wahlen. Ein besonders elegantes (und noch relativ neues) Protokoll wird
-hier vorgestellt. Zuvor muessen jedoch noch zwei Hilfsmittel bereitgestellt werden.
+There are many different implementations and proposals for electronic voting. (source).
+- Add What is electronic voting (source)
+
+
+A particularly elegant (and still relatively new) approach for electronic voting are E2E verifiable voting protocols. \cite[1]{eg-spec}
+
+An election is End-to-end (E2E) verifiable if two properties are achieved \cite[1]{eg-spec}:
+\begin{itemize}
+    \item 1. Individual voters can verify that their votes have been accurately recorded. \cite[1]{eg-spec}
+    \item 2. Voters and observers can verify that all recorded votes have been accurately counted. \cite[1]{eg-spec}
+\end{itemize}
+
+One such E2E verifiable voting protocol is ElectionGuard which will be implemented in this thesis. Before proceeding several cryptographic techniques need to be introduced first.
+
 
 \subsection{Elgamal}
-Der erste 1976 publizierte, public key-algorithmus von Diffie und Hellman. Er dient dem Schluesselaustausch, kann aber nicht zum Signieren verwendet werden.
-Eine Verallgemeinerung, die auch zum Verschluesselung und zum Signieren taugt, ist der Algorithmus von ElGamal.\cite[78]{crypto}.
+Public-key cryptography allows anyone to exchange secret messages with any partners, sign documents and use many other cryptographic applications \cite[22]{crypto}. Diffie-Hellman is the first published public key algorithm by Diffie and Hellman in 1976.\cite[94]. ElGamal is a generalisation of the Diffie-Hellman key exchange protocol.\cite[95]{crypto} ElGamal is suitable for encryption and signing compared to Diffie-Hellman which is only suitable for key exchange.\cite[78]{crypto}.
+
+\subsubsection{SHA-256}
+SHA-256 is a one-way hash function. One-way functions are functions that are easy to calculate, but whose inversion is very difficult or impossible to calculate \cite[100]{crypto}. One-way hash functions map plaintexts of any length to a hash value of a fixed length. \cite[100]{crypto}.
 
 
-\cite[78]{crypto}
 
-Der ElGamal-Algorithmus ist eine Verallgemeinerung des Diffie-Hellman-Algorithmus. \cite[95]{crypto}.
-Diffie-Hellman ist ein Public-Key Algorithmus \cite[94]{crypto}. Mit Hilfe der Public-Key-Kryptography kann nun jedermann mit beliebigen Partnern geheime Narchichten austauschen, Dokumente signieren und viele andere kryptographische Anwendungen nutzen.\cite[22]{crypto}
 
-\subsubsection{Einweg-Hash-Funktionen}
-Einwegfunktionen sind funktionen die sich leicht berechnen lassen, deren Umkehrung jedoch nicht oder nur sehr schwer (
-d.h. mit
-nicht
-vertretbaren Aufwand) zu berechnen ist, insebsondere, wenn die funktion oeffentlich bekannt ist. \cite[100]{crypto}.
-Einweg-Hash-Funktionen sind Einwegfunktionen, die beliebig lange Klartexte auf einen Hash-Wert fester Laenge abbilden.\
-Secure-Hash-Algorithmus (SHA)
+
+
+
+
 
 \subsection{Non-interactive zero-knowledge (NIZK)}
 Non-interactive zero-knowledge (NIZK) proofs ElectionGuard provides numerous proofs about encryption keys, encrypted
@@ -52,8 +53,8 @@ secret key s to interactively prove possession of s without revealing s. \cite[6
 encryption to be interactively proven to decrypt to a particular value without revealing the nonce used for encryption
 or the secret decryption key s. (This proof can be constructed with access to either the nonce used for encryption or
 the secret decryption key.) \cite[6]{eg-spec}
-\subsubsection{Cramer-Damg˚ ard-Schoenmakers technique}
-3. The Cramer-Damg˚ ard-Schoenmakers technique9 enables a disjunction to be interactively
+\subsubsection{Cramer-Damg ard-Schoenmakers technique}
+3. The Cramer-Damg ard-Schoenmakers technique9 enables a disjunction to be interactively
 proven without revealing which disjunct is true.
 \subsubsection{Fiat-Shamir heuristic}
 4. The Fiat-Shamir heuristic10 allows interactive proofs to be
@@ -67,20 +68,14 @@ Threshold Encryption
 Additive Homomorphic encryption
 
 
-Einleitung Wahlen und vorstellung von ElectionGuard
-
 \section{ElectionGuard}
-
 
 
 ElectionGuard is not a complete election system. It instead provides components for system developers to implement
 E2E-verifiable elections. The goal of ElectionGuard is to promote voter confidence by empowering voters to
 indepently verify the accuracy of election results. \cite[1]{eg-spec}
 
-An E2E-verifiable election provides artifacts which allow voters to confirm that their votes have been accurately
-recorded and counted. Specifically, an election is End-to-end (E2E) verifiable if two properties are achieved. 1.
-Individual voters can verify that their votes have been accurately recorded. 2. Voters and observers can verify that all
-recorded votes have been accurately counted.\cite[1]{eg-spec}
+
 
 ElectionGuard achieves this by
 
@@ -95,16 +90,16 @@ look up of tracking codes by voters.
 Four Principal components of ElectionGuard are described below \cite[3-4]{eg-spec}
 \begin{itemize}
     \item[Parameter Requirements] These are properties required of parameters that are standard in every election. A
-    specific set of standard parameters is provided [...].
+          specific set of standard parameters is provided [...].
     \item[Key Generation] Prior to each individual election, guardians must generate individual publicprivate key
-    pairs and exchange shares of private keys to enable completion of an election even if some guardians become
-    unavailable.
+          pairs and exchange shares of private keys to enable completion of an election even if some guardians become
+          unavailable.
     \item[Ballot Encryption] While encrypting the contents of a ballot is a relatively simple operation, most of the
-    work of ElectionGuard is the process of creating externally-verifiable artifacts to prove that each
-    encrypted ballot is well-formed (i.e., its decryption is a legitimate ballot without overvotes or improper values).
+          work of ElectionGuard is the process of creating externally-verifiable artifacts to prove that each
+          encrypted ballot is well-formed (i.e., its decryption is a legitimate ballot without overvotes or improper values).
     \item[Verifiable Decryption]
-    At the conclusion of each election, guardians use their private keys to produce election tallies
-    together with verifiable artifacts that prove that the tallies are correct.
+          At the conclusion of each election, guardians use their private keys to produce election tallies
+          together with verifiable artifacts that prove that the tallies are correct.
 \end{itemize}
 
 \subsubsection{Parameter Requirements}
@@ -139,7 +134,7 @@ keys. So, no entity will ever be in possession of a private key that can be used
 
 3.2 Key Generation Before an election, the number of guardians (n) is fixed together with a quorum value (k) that
 describes the number of guardians necessary to decrypt tallies and produce election verification data. The values n and
-k are integers subject to the constraint that 1 ≤ k ≤ n. Canvassing board members can often serve the role of election
+k are integers subject to the constraint that $1 \leq k \leq n$. Canvassing board members can often serve the role of election
 guardians, and typical values for n and k could be 5 and 3 – indicating that 3 of 5 canvassing board members must
 cooperate to produce the artifacts that enable election verification. The reason for not setting the quorum value k too
 low is that it will also be possible for k guardians to decrypt individual ballots.
@@ -163,9 +158,9 @@ An encryption of one is used to indicate that an option is selected, and an encr
 an option is not selected.\cite[5]{eg-spec}
 
 Homomorphic properties A fundamental quality of the exponential form of ElGamal described above is its additively
-homomorphic property. If two messages M1 and M2 are respectively encrypted as (A1, B1) = (gR1 mod p, gM1 · KR1 mod p)
-and (A2, B2) = (gR2 mod p, gM2 · KR2 mod p), then the componentwise product (A, B) = (A1A2 mod p, B1B2 mod p) = (gR1+R2
-mod p, gM1+M2 · KR1+R2 mod p) is an encryption of the sum M1 + M2.
+homomorphic property. If two messages M1 and M2 are respectively encrypted as $(A1, B1) = (gR1 mod p, gM1 \cdot KR1 mod p)
+    and (A2, B2) = (gR2 mod p, gM2 \cdot KR2 mod p)$ ,then the componentwise product $(A, B) = (A1A2 mod p, B1B2 mod p) = (gR1+R2
+    mod p, gM1+M2 \cdot KR1+R2 mod p)$ is an encryption of the sum $M1 + M2$.
 \cite[5]{eg-spec}.
 
 This additively homomorphic property is used in two important ways in ElectionGuard. First, all of the encryptions of a
@@ -176,7 +171,7 @@ selections made in a single contest on a single ballot. After demonstrating that
 zero or one, the product of the encryptions indicates the number of options that are encryptions of one, and this can be
 used to show that no more ones than permitted are among the encrypted options – i.e., that no more options were selected
 than permitted. However, as will be described below, it is possible for a holder of a nonce R to prove to a third party
-that a pair (α, β) is an encryption of M without revealing the nonce R and without access to the secret s.
+that a pair $(\alpha, \beta)$ is an encryption of M without revealing the nonce R and without access to the secret s.
 \cite[5]{eg-spec}
 
 Encryption of other data ElectionGuard provides means to encrypt data other than votes, which are selections encoded as
@@ -292,7 +287,7 @@ contest is equal to the selection limit for that contest (usually one).
 
 The use of ElGamal encryption enables efficient zero-knowledge proofs of these requirements, and the Fiat-Shamir
 heuristic can be used to make these proofs non-interactive. Chaum-Pedersen proofs are used to demonstrate that an
-encryption is that of a specified value, and these are combined with the Cramer-Damg˚ ard-Schoenmakers technique to show
+encryption is that of a specified value, and these are combined with the Cramer-Damg ard-Schoenmakers technique to show
 that an encryption is that of one of a specified set of values – particularly that a value is an encryption of either
 zero or one. The encryptions of selections in a contest are homomorphically combined, and the result is shown to be an
 encryption of that contest’s selection limit – again using a Chaum-Pedersen
@@ -323,8 +318,8 @@ afforded an option to deposit the ballot in a receptacle
 \subsection{Ballot Aggregation}
 At the conclusion of voting, all of the ballot encryptions are published in the election record together with the proofs
 that the ballots are well-formed. Additionally, all of the encryptions of each option are homomorphically combined to
-form an encryption of the total number of times that option was selected. The encryptions (αi, βi) of each individual
-option are combined by forming the product (A, B) = (� i αi mod p, � i βi mod p). This aggregate encryption (A, B),
+form an encryption of the total number of times that option was selected. The encryptions $(\alpha i, \beta i)$ of each individual
+option are combined by forming the product $(A, B) = ( i \alpha i mod p,  i \beta i mod p)$. This aggregate encryption (A, B),
 which represents an encryption of the tally of that option, is published in the election record for each option.
 \cite[18]{eg-spec}
 
@@ -340,8 +335,8 @@ Every ballot spoiled in an election is individually verifiably decrypted in exac
 ballot of tallies is decrypted.
 \cite[21]{eg-spec}
 
-The exponential ElGamal used to encrypt votes is defined by a 4096-bit prime p and a 256-bit prime q which divides (p −
-1). We use r = (p − 1)/q to denote the cofactor of q, and a
+The exponential ElGamal used to encrypt votes is defined by a 4096-bit prime p and a 256-bit prime q which divides (p -
+1). We use r = (p - 1)/q to denote the cofactor of q, and a
 \cite[21]{eg-spec}
 
 \subsection{The Election Record}
@@ -385,14 +380,14 @@ ESP-IDF is the IoT development framework for ESP series SoCs provided by Espress
 \begin{itemize}
 
     \item
-    A series of libraries and header files, providing core components required for building software projects based on
-    ESP SoC;
+          A series of libraries and header files, providing core components required for building software projects based on
+          ESP SoC;
 
 
 
     \item Common tools and functions used during the development and
-    manufacturing processes, e.g., build, flashing, debugging, measurement
-    and etc.
+          manufacturing processes, e.g., build, flashing, debugging, measurement
+          and etc.
 
 
 \end{itemize}
