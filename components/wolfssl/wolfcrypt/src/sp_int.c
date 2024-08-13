@@ -5227,7 +5227,6 @@ int sp_exch(sp_int* a, sp_int* b)
 
         FREE_SP_INT(t, NULL);
     }
-
     return err;
 }
 #endif /* (WOLFSSL_SP_MATH_ALL && !WOLFSSL_RSA_VERIFY_ONLY) || !NO_DH ||

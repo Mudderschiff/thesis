@@ -1,6 +1,6 @@
 #include "mod_math.h"
 
-mp_int large_prime, small_prime, cofactor, generator;
+//mp_int large_prime, small_prime, cofactor, generator;
 
 static const unsigned char p_3072[] = {
     0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
@@ -161,10 +161,10 @@ static const unsigned char q_256[] = {
     0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x43 
 };
 
-void print_mp_int(mp_int *num) {   
+void print_mp_int(sp_int *num) {   
     // Allocate a buffer dynamically. Each byte can be represented by 2 hex characters.
     // Plus one for the null terminator.
-    int size = mp_unsigned_bin_size(num);
+    int size = sp_unsigned_bin_size(num);
     char *buffer = (char *)malloc(size * 2 + 1);
     if (buffer == NULL) {
         ESP_LOGE("Print mp_int", "Failed to allocate memory for buffer");
@@ -172,11 +172,12 @@ void print_mp_int(mp_int *num) {
     }
     memset(buffer, 0, size * 2 + 1); // Initialize the buffer to zeros
 
-    if (mp_toradix(num, buffer, 16) == MP_OKAY) {
+    if (sp_toradix(num, buffer, 16) == MP_OKAY) {
         ESP_LOGI("Print mp_int", "mp_int value: %s", buffer);
     } else {
         ESP_LOGE("Print mp_int", "Failed to convert mp_int to string");
     }
+    free(buffer);
 }
 //mp_zero // returns an int? // no init?
 //operand lengths of N ∈ {512, 1024, 1536, 2048,
@@ -186,33 +187,32 @@ void print_mp_int(mp_int *num) {
 // Compute Large number Modular Exponetiation with hardware Y = (G ^ X) mod P
 // into 4096 bit binary and pad with 0?
 // type mathint
-int mod_exp(mp_int *g, mp_int *x, mp_int *p, mp_int *y) {
+int mod_exp(sp_int *g, sp_int *x, sp_int *p, sp_int *y) {
     return esp_mp_exptmod(g,x,p,y);
 }
 
-int g_pow_p(mp_int *seckey, mp_int *pubkey) {
+int g_pow_p(sp_int *seckey, sp_int *pubkey) {
     int ret;
-    UBaseType_t stackHighWaterMarkBytes = uxTaskGetStackHighWaterMark2(NULL);
-    ESP_LOGI("STACK", "Minimum stack space remaining before init (bytes): %d", stackHighWaterMarkBytes);
-    //mp_init_multi(&large_prime, &generator, NULL, NULL , NULL, NULL);
-    mp_init(&large_prime);
-    mp_init(&generator);
-    stackHighWaterMarkBytes = uxTaskGetStackHighWaterMark2(NULL);
-    ESP_LOGI("STACK", "Minimum stack space remaining after init (bytes): %d", stackHighWaterMarkBytes);
-    mp_read_unsigned_bin(&large_prime, p_3072, sizeof(p_3072));
-    mp_read_unsigned_bin(&generator, g_3072, sizeof(g_3072));
-    stackHighWaterMarkBytes = uxTaskGetStackHighWaterMark2(NULL);
-    ESP_LOGI("STACK", "Minimum stack space remaining after alloc (bytes): %d", stackHighWaterMarkBytes);
-    ret = esp_mp_exptmod(&generator,seckey,&large_prime,pubkey);
+    DECL_MP_INT_SIZE(large_prime, 3072);
+    NEW_MP_INT_SIZE(large_prime, 3072, NULL, DYNAMIC_TYPE_BIGINT);
+    INIT_MP_INT_SIZE(large_prime, 3072);
+    sp_read_unsigned_bin(large_prime, p_3072, sizeof(p_3072));
+
+    DECL_MP_INT_SIZE(generator, 3072);
+    NEW_MP_INT_SIZE(generator, 3072, NULL, DYNAMIC_TYPE_BIGINT);
+    INIT_MP_INT_SIZE(generator, 3072);
+    sp_read_unsigned_bin(generator, g_3072, sizeof(g_3072));
+    ret = esp_mp_exptmod(generator,seckey,large_prime,pubkey);
     if(ret != 0) {
         ESP_LOGE("G_POW_P", "Failed to compute g^x mod p");
+        ESP_LOGE("G_POW_P", "Error code: %d", ret);
     }
-    stackHighWaterMarkBytes = uxTaskGetStackHighWaterMark2(NULL);
-    ESP_LOGI("STACK", "Minimum stack space remaining after comp (bytes): %d", stackHighWaterMarkBytes);
-    //mod_exp(&generator, seckey, &large_prime, pubkey);
 
-    mp_clear(&large_prime);
-    mp_clear(&generator);
+
+    sp_zero(large_prime);
+    sp_zero(generator);
+    FREE_MP_INT_SIZE(large_prime, NULL, DYNAMIC_TYPE_BIGINT);
+    FREE_MP_INT_SIZE(generator, NULL, DYNAMIC_TYPE_BIGINT);
     return 0;
 }
 
@@ -221,42 +221,29 @@ int g_pow_p(mp_int *seckey, mp_int *pubkey) {
 // Q is very close to the maximum value for a 256 bit number.
 // Might be worth it to regenerate in case it is bigger if mod is expensive
 int rand_q(mp_int *result) {
-    RNG rng;
-    int sz = 32;
-    
+    int sz = 32;    
     unsigned char *block = (unsigned char *)malloc(sz * sizeof(unsigned char));
     if (block == NULL) {
         ESP_LOGE("RAND_Q", "Failed to allocate memory for block");
         return -1; // Memory allocation failed
-    }
+    }  
 
-    if ((wc_InitRng(&rng)) != 0) {
-        ESP_LOGE("RAND_Q", "Failed to initialize RNG");
-        free(block);
-        wc_FreeRng(&rng);
-        return -1; //init of rng failed!
-    }
-    if ((wc_RNG_GenerateBlock(&rng, block, sz)) != 0) {
-        ESP_LOGE("RAND_Q", "Failed to generate random block");
-        free(block);
-        wc_FreeRng(&rng);
-        return -1; //generating block failed!
-    }
+    esp_fill_random(block, sz);
+    sp_read_unsigned_bin(result, block, sz);
+    // Possible optimization might not clear the random number
+    memset(block, 0, sz); 
+    free(block);
 
-    mp_init(&small_prime);
-    mp_read_unsigned_bin(&small_prime, q_256, sizeof(q_256));
+    DECL_MP_INT_SIZE(small_prime, 256);
+    NEW_MP_INT_SIZE(small_prime, 256, NULL, DYNAMIC_TYPE_BIGINT);
+    INIT_MP_INT_SIZE(small_prime, 256);
+    sp_read_unsigned_bin(small_prime, q_256, sizeof(q_256));
 
-    mp_read_unsigned_bin(result, block, sz);
-    print_mp_int(result);
-    mp_mod(result, &small_prime, result);
-    print_mp_int(result);
+    sp_mod(result, small_prime, result);
 
     // Clear
-    mp_clear(&small_prime);
-    free(block);
-    // Possible optimization might not clear the random number
-    //memset(block, 0, sz);
-    
+    sp_zero(small_prime);
+    FREE_MP_INT_SIZE(small_prime, NULL, DYNAMIC_TYPE_BIGINT);
     return 0;
 }
 
@@ -269,11 +256,10 @@ int rand_q(mp_int *result) {
  //   :param a: Zero or more elements of any of the accepted types.
 // :return: A cryptographic hash of these elements, concatenated.
 // Collision and concatenation? In python delimiter | is used
-int hash(mp_int *a, mp_int *b, mp_int *result) {
+int hash(sp_int *a, sp_int *b, sp_int *result) {
     int ret;
-    byte hash[WC_SHA256_DIGEST_SIZE];
-    word32 a_size = mp_unsigned_bin_size(a);
-    word32 b_size = mp_unsigned_bin_size(b); 
+    word32 a_size = sp_unsigned_bin_size(a);
+    word32 b_size = sp_unsigned_bin_size(b); 
     word32 tmp_size = a_size + b_size;
     
     byte *tmp = (byte *)malloc(tmp_size);
@@ -282,50 +268,90 @@ int hash(mp_int *a, mp_int *b, mp_int *result) {
         return -1; // Return an error code
     }
     // Concatenate the two mp_ints
-    ret = mp_to_unsigned_bin(a, tmp);
-    ret = mp_to_unsigned_bin(b, tmp + a_size);
+    ret = sp_to_unsigned_bin(a, tmp);
+    ret = sp_to_unsigned_bin_at_pos(a_size,b, tmp);
 
     // Conveniencefunction. Handles Initialisation, Update and Finalisation
-    if ((ret = wc_Sha256Hash(tmp, tmp_size, hash)) != 0) {
+    if ((ret = wc_Sha256Hash(tmp, tmp_size, tmp)) != 0) {
         WOLFSSL_MSG("Hashing Failed");
         return ret;
     }
 
-    ret = mp_read_unsigned_bin(result, hash, WC_SHA256_DIGEST_SIZE);
-    //print_mp_int(a);
-    //print_mp_int(&result);
-
-   
-    memset(hash, 0, WC_SHA256_DIGEST_SIZE);
+    ret = sp_read_unsigned_bin(result, tmp, WC_SHA256_DIGEST_SIZE);   
     memset(tmp, 0, tmp_size);
+    free(tmp);
     return ret;
 }
 
-int make_schnorr_proof(mp_int *pubkey, mp_int *seckey) {
-    mp_int k,h,c,u,r;
-    mp_init_multi(&k, &h, &c, &u, &r, NULL);
+int make_schnorr_proof(sp_int *pubkey, sp_int *seckey) {
+    //DECL_MP_INT_SIZE(k, 256);
+    //NEW_MP_INT_SIZE(k, 3072, NULL, DYNAMIC_TYPE_BIGINT);
+    //INIT_MP_INT_SIZE(k, 3072);
+    
+    //DECL_MP_INT_SIZE(c, 256);
+    //NEW_MP_INT_SIZE(c, 3072, NULL, DYNAMIC_TYPE_BIGINT);
+    //INIT_MP_INT_SIZE(c, 3072);
+    
+    //DECL_MP_INT_SIZE(u, 256);
+    //NEW_MP_INT_SIZE(u, 3072, NULL, DYNAMIC_TYPE_BIGINT);
+    //INIT_MP_INT_SIZE(u, 3072);
+    
+    DECL_MP_INT_SIZE(r, 256);
+    NEW_MP_INT_SIZE(r, 256, NULL, DYNAMIC_TYPE_BIGINT);
+    INIT_MP_INT_SIZE(r, 256);
+    rand_q(r);
 
-    rand_q(&r);
-    ESP_LOGI("MAKE_SCHNORR_PROOF", "Random number r: ");
-    print_mp_int(&r);
-    mp_copy(pubkey, &k);
-    ESP_LOGI("MAKE_SCHNORR_PROOF", "pubkey = k ");
-    print_mp_int(&k);
-    print_mp_int(pubkey);
-    //g_pow_p(&r, &h);
-    //ESP_LOGI("MAKE_SCHNORR_PROOF", "g^r mod p = h ");
-    //print_mp_int(&h);
-    //hash(pubkey, &h, &c);
-    //ESP_LOGI("MAKE_SCHNORR_PROOF", "hash(pubkey, h) = c ");
-    //print_mp_int(&c);
+    DECL_MP_INT_SIZE(h, 3072);
+    NEW_MP_INT_SIZE(h, 3072, NULL, DYNAMIC_TYPE_BIGINT);
+    INIT_MP_INT_SIZE(h, 3072);
+    g_pow_p(r, h);
 
-    mp_clear(&k);
-    mp_clear(&h);
-    mp_clear(&c);
-    mp_clear(&u);
-    mp_clear(&r);
+    //c = hash_elems(k, h)
+    DECL_MP_INT_SIZE(c, 256);
+    NEW_MP_INT_SIZE(c, 256, NULL, DYNAMIC_TYPE_BIGINT);
+    INIT_MP_INT_SIZE(c, 256);
+    hash(pubkey, h, c);
+    //k = keypair.public_key
+
+    // result of multiplication bc will have approximatelz (256 + 3072 = 3328 bits)
+    DECL_MP_INT_SIZE(u, 3328);
+    NEW_MP_INT_SIZE(u, 3328, NULL, DYNAMIC_TYPE_BIGINT);
+    INIT_MP_INT_SIZE(u, 3328);
+    //u = a_plus_bc_q(r, keypair.secret_key, c)
     //u = (a+b*c) mod q
-    //u = (r+keypair.secret_key*c) mod q
+    //sp_mul(r,seckey,u);
+    //sp_addmod(r,u,q,u);
+    // b mul c
+    // a plus bc mod q (sp_addmod)
+    //u = a_plus_bc_q(r, keypair.secret_key, c)
+    //u = r = seckey
+    //u = (r + keypair.secret_key * c) mod q
+    sp_mul(seckey,c,u);
+    DECL_MP_INT_SIZE(q, 256);
+    NEW_MP_INT_SIZE(q, 256, NULL, DYNAMIC_TYPE_BIGINT);
+    INIT_MP_INT_SIZE(q, 256);
+    sp_read_unsigned_bin(q, q_256, sizeof(q_256));
+    print_mp_int(r);
+    print_mp_int(q);
+    print_mp_int(u);
+    sp_addmod(r,u,q,u);
+    print_mp_int(u);
+
+    
+
+    sp_zero(r);
+    sp_zero(h);
+    sp_zero(c);
+    sp_zero(u);
+    sp_zero(q);
+    FREE_MP_INT_SIZE(r, NULL, DYNAMIC_TYPE_BIGINT);
+    FREE_MP_INT_SIZE(h, NULL, DYNAMIC_TYPE_BIGINT);
+    FREE_MP_INT_SIZE(c, NULL, DYNAMIC_TYPE_BIGINT);
+    FREE_MP_INT_SIZE(u, NULL, DYNAMIC_TYPE_BIGINT);
+    FREE_MP_INT_SIZE(q, NULL, DYNAMIC_TYPE_BIGINT);
+
+
+
 
     //k (pub key), h (commitment), c (challenge), u (response)
     return 0;

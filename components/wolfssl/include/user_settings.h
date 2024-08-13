@@ -166,13 +166,17 @@
 #define HASH_SIZE_LIMIT /* for test.c */
 
 /* USE_FAST_MATH is default */
-#define USE_FAST_MATH
+//#define USE_FAST_MATH
 
 /*****      Use SP_MATH      *****/
-/* #undef USE_FAST_MATH          */
-/* #define SP_MATH               */
-/* #define WOLFSSL_SP_MATH_ALL   */
+#undef USE_FAST_MATH          
+#define SP_MATH               
+#define WOLFSSL_SP_MATH_ALL   
 
+#define WOLFSSL_SP_SMALL
+#define WOLFSSL_SP_LOW_MEM
+#define WOLFSSL_HAVE_SP_RSA
+#define WOLFSSL_SP_4096
 /***** Use Integer Heap Math *****/
 /* #undef USE_FAST_MATH          */
 /* #define USE_INTEGER_HEAP_MATH */
